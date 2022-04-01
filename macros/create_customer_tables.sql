@@ -1,38 +1,49 @@
-{% if execute %}
+{% macro create_customer_tables() %}
 
--- Set models to create within each customer's schema
-{% set models = [
-    'dim_customers',
-    'dim_parts',
-    'dim_suppliers',
-    'fct_order_items',
-    'fct_orders'
-] %}
+    -- Set models to create within each customer's schema
+    {% set models = [
+        'dim_customers',
+        'dim_parts',
+        'dim_suppliers',
+        'fct_order_items',
+        'fct_orders'
+    ] %}
 
--- Retrieve schemas to build objects into based on CUST_ prefix
-{% set schemas_sql %}
+    -- Retrieve schemas to build objects into based on CUST_ prefix
+    {% set schemas_sql %}
 
-select schema_name
-from information_schema.schemata
-where schema_name like 'CUST_%';
+    select schema_name
+    from information_schema.schemata
+    where schema_name like 'CUST_%';
 
-{% endset %}
+    {% endset %}
 
-{% set customer_schemas = run_query(schemas_sql).columns[0].values() %}
+    {% set customer_schemas = run_query(schemas_sql).columns[0].values() %}
 
--- Loop through each customer, model and build in customer schema
-{% for schema in customer_schemas %}
+    -- Loop through each customer, model and build in customer schema
+    {% for schema in customer_schemas %}
 
-    {% for model in models %}
+        -- Only build in customer schemas when in prod
+        {% set schema = schema if target.name == 'prod' else target.schema %}
 
-        use database {{ target.database }};
+        {% do log('Schema is: ' ~ schema, info=True) %}
 
-        -- _2 suffix just to distinguish between other way of building these objects
-        create or replace table {{ schema }}.{{ model }}_2 as
-            {{ customer_model(model, schema) }}
+        {% for model in models %}
+
+            {% set model_sql %}
+
+            -- _2 suffix just to distinguish between other way of building these objects
+            create or replace table {{ target.database }}.{{ schema }}.{{ model }}_2 as
+                {{ customer_model(model, schema) }};
+
+            {% endset %}
+
+            {% do run_query(model_sql) %}
+
+            {% do log(schema ~ '.' ~ model ~ ' Successfully Built!', info=true) %}
+
+        {% endfor %}
 
     {% endfor %}
 
-{% endfor %}
-
-{% endif %}
+{% endmacro %}
