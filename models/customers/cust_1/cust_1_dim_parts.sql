@@ -1,0 +1,1 @@
+{{ customer_model('dim_parts', 'cust_1') }}
