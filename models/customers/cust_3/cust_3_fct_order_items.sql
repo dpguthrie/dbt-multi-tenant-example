@@ -1,0 +1,1 @@
+{{ customer_model('fct_order_items', 'cust_3') }}
