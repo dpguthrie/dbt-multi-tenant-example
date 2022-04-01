@@ -6,6 +6,6 @@
 
     select {{ dbt_utils.star(rel, except=['customer']) }}
     from {{ rel }}
-    where customer = '{{ customer_name }}'
+    where customer = '{{ customer_name | upper }}'
 
 {% endmacro %}
