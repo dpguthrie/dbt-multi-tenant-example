@@ -28,6 +28,7 @@ final as (
     part.size as part_size,
     part.container,
     part.retail_price,
+    part.customer,
 
     supplier.supplier_key,
     supplier.supplier_name,

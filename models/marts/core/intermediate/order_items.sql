@@ -19,7 +19,7 @@ select
     line_item.supplier_key,
     orders.order_date,
     orders.status_code as order_status_code,
-    
+    orders.customer,
     
     line_item.return_flag,
     
