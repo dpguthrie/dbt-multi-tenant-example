@@ -24,23 +24,24 @@
     {% for schema in customer_schemas %}
 
         -- Only build in customer schemas when in prod
-        {% set schema = schema if target.name == 'prod' else target.schema %}
-
-        {% do log('Schema is: ' ~ schema, info=True) %}
+        {% set build_schema = schema if target.name == 'prod' else target.schema %}
 
         {% for model in models %}
+
+            -- Prefix with customer schema when not in prod
+            {% set build_model = model if target.name == 'prod' else schema | lower + '_' + model %}
 
             {% set model_sql %}
 
             -- _2 suffix just to distinguish between other way of building these objects
-            create or replace table {{ target.database }}.{{ schema }}.{{ model }}_2 as
+            create or replace table {{ target.database }}.{{ build_schema }}.{{ build_model }}_2 as
                 {{ customer_model(model, schema) }};
 
             {% endset %}
 
             {% do run_query(model_sql) %}
 
-            {% do log(schema ~ '.' ~ model ~ ' Successfully Built!', info=true) %}
+            {% do log(build_schema ~ '.' ~ build_model ~ ' Successfully Built!', info=true) %}
 
         {% endfor %}
 
