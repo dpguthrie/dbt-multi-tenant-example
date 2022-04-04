@@ -29,7 +29,7 @@
         {% for model in models %}
 
             -- Prefix with customer schema when not in prod
-            {% set build_model = model if target.name == 'prod' else schema + '_' + model %}
+            {% set build_model = model if target.name == 'prod' else schema | lower + '_' + model %}
 
             {% set model_sql %}
 
