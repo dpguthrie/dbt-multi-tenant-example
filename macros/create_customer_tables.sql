@@ -9,6 +9,16 @@
         'fct_orders'
     ] %}
 
+    -- Grab results from recently executed query (within loop)
+    {% set results_sql %}
+
+    select *
+    from table(
+        result_scan(last_query_id())
+    )
+
+    {% endset %}
+
     -- Retrieve schemas to build objects into based on CUST_ prefix
     {% set schemas_sql %}
 
@@ -28,7 +38,7 @@
 
         {% for model in models %}
 
-            -- Prefix with customer schema when not in prod
+            -- Prefix with customer schema when not in prod (ensures unique model name within dev schema)
             {% set build_model = model if target.name == 'prod' else schema | lower + '_' + model %}
 
             {% set model_sql %}
@@ -41,7 +51,9 @@
 
             {% do run_query(model_sql) %}
 
-            {% do log(build_schema ~ '.' ~ build_model ~ ' Successfully Built!', info=true) %}
+            {% set results = run_query(results_sql).columns[0].values()[0] %}
+
+            {% do log(results, info=true) %}
 
         {% endfor %}
 
