@@ -43,3 +43,9 @@ The job for this option should be defined with at least the following commands (
 2. dbt run-operation create_customer_tables
 
 The first command will create the tables containing all customer data and the second command will run the macro to create customer-specific models.
+
+### Option 3 (Best of Both Worlds)
+
+Updated:  9/29/22
+
+This option would leverage a package called [dbt-dynamic-models](https://github.com/dpguthrie/dbt-dynamic-models).
