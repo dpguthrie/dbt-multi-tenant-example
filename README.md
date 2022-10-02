@@ -2,6 +2,8 @@
 
 This project is meant to showcase options for data modeling where each customer has their own individual schema within a database
 
+**Update (9/29/22) - [Another option](#option-3-best-of-both-worlds) was added that the loom video below and code within this repo does not cover.**
+
 ## Loom
 
 Watch a ~15 minute video detailing the options below:  https://www.loom.com/share/0461b3473e34495586fbeed54671425e
@@ -43,3 +45,7 @@ The job for this option should be defined with at least the following commands (
 2. dbt run-operation create_customer_tables
 
 The first command will create the tables containing all customer data and the second command will run the macro to create customer-specific models.
+
+### Option 3 (Best of Both Worlds)
+
+This option would leverage a package called [dbt-dynamic-models](https://github.com/dpguthrie/dbt-dynamic-models).
