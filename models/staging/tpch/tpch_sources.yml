@@ -28,6 +28,9 @@ sources:
             description: raw price
           - name: o_orderdate
             description: date the order was made
+            tests:
+              - dbt_expectations.expect_column_values_to_be_in_type_list:
+                  column_type_list: [date, datetime]
           - name: o_orderpriority
             description: code associated with the order
           - name: o_clerk
@@ -39,6 +42,9 @@ sources:
           
       - name: customer
         description: main customer table
+        tests:
+          - dbt_expectations.expect_table_columns_to_contain_set:
+              column_list: ["c_custkey", "c_name", "c_address"]
         columns:
           - name: c_custkey
             description: unique customer key
@@ -56,7 +62,7 @@ sources:
           - name: c_phone
             description: phone number of the customer
           - name: c_acctbal
-            description: raw account balance 
+            description: raw account balance
           - name: c_mktsegment
             description: market segment of the customer
           - name: c_comment

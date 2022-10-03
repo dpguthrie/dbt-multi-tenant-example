@@ -7,7 +7,6 @@ models:
       - name: customer_key
         description: primary key of the model
         tests:
-          - unique
           - not_null
       - name: name
         description: customer id
@@ -23,6 +22,11 @@ models:
         description: market segment of the customer
       - name: comment
         description: '{{ doc("comment") }}'
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - customer_key
+            - customer
 
   - name: stg_tpch_line_items
     description: staging layer for line items data
